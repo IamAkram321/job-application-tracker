@@ -1,4 +1,4 @@
-# 🎯 JobTrackr - AI Job Application Tracker
+# 🎯 JobTrackr - Job Application Tracker
 
 > **A beautiful, production-ready job application tracking system built with React 19, Tailwind CSS, and modern web technologies.**
 
@@ -11,9 +11,28 @@
 
 JobTrackr is a comprehensive job application management system that helps job seekers track, analyze, and manage their applications. Built with modern best practices and production-ready features.
 
-### 🎬 Demo
 
-![Dashboard Preview](https://via.placeholder.com/800x400/3b82f6/FFFFFF?text=JobTrackr+Dashboard)
+---
+
+## 📸 Screenshots
+
+### Login Page
+![Homepage](./screenshots/loginpage.png)
+
+### Dashboard 
+![Editor](./screenshots/dashboard.png)
+
+### Application Page
+![Editor](./screenshots/applicationpage.png)
+
+### Analytics Page
+![Editor](./screenshots/analyticspage.png)
+
+### Graph Page
+![Editor](./screenshots/graph.png)
+
+---
+
 
 ## 🚀 Quick Start
 
@@ -21,9 +40,7 @@ JobTrackr is a comprehensive job application management system that helps job se
 - Node.js (v18+)
 - MongoDB (local or Atlas)
 
-### Full Setup
 
-See **[SETUP_GUIDE.md](SETUP_GUIDE.md)** for detailed instructions.
 
 **Quick Steps:**
 
@@ -50,13 +67,7 @@ npm run dev
 - Email: `test@example.com`
 - Password: `password123`
 
-## 📚 Documentation
 
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Complete setup instructions
-- **[BACKEND_SETUP.md](BACKEND_SETUP.md)** - Backend configuration details
-- **[QUICK_START.md](QUICK_START.md)** - Quick usage guide
-- **[FEATURES.md](FEATURES.md)** - Complete feature list
-- **[FRONTEND_REBUILD.md](FRONTEND_REBUILD.md)** - Frontend architecture
 
 ## 🌟 Key Features
 
@@ -208,13 +219,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Vite for the blazing fast build tool
 - All the open-source contributors
 
-## 📞 Support
 
-For support, email support@jobtrackr.dev or open an issue in the repository.
-
----
-
-**Built with ❤️ for efficient job application tracking**
+**Built  for efficient job application tracking**
 
 
 
