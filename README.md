@@ -17,19 +17,19 @@ JobTrackr is a comprehensive job application management system that helps job se
 ## 📸 Screenshots
 
 ### Login Page
-![Homepage](./screenshots/loginpage.png)
+![Homepage](frontend/screenshots/loginpage.png)
 
 ### Dashboard 
-![Editor](./screenshots/dashboard.png)
+![Editor](frontend/screenshots/dashboard.png)
 
 ### Application Page
-![Editor](./screenshots/applicationpage.png)
+![Editor](frontend/screenshots/applicationpage.png)
 
 ### Analytics Page
-![Editor](./screenshots/analyticspage.png)
+![Editor](frontend/screenshots/analyticspage.png)
 
 ### Graph Page
-![Editor](./screenshots/graph.png)
+![Editor](frontend/screenshots/graph.png)
 
 ---
 
