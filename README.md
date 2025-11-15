@@ -61,13 +61,6 @@ npm install
 npm run dev
 ```
 
-3. **Access**: http://localhost:5173
-
-**Default Test Credentials**:
-- Email: `test@example.com`
-- Password: `password123`
-
-
 
 ## 🌟 Key Features
 
