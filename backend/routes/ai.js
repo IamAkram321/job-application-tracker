@@ -1,51 +1,42 @@
 import express from "express";
 import multer from "multer";
-import dotenv from "dotenv";
-import OpenAI from "openai";
 import { createRequire } from "module";
+import ollama from "ollama";
 
-dotenv.config();
-
+// Fix for pdf-parse (CommonJS)
 const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse"); // ✔ Correct for CommonJS module
+const pdfParse = require("pdf-parse");
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
+// POST: /api/ai/match
 router.post("/match", upload.single("resume"), async (req, res) => {
   try {
-    console.log("🔹 /api/ai/match HIT");
+    console.log("🔹 OLLAMA API HIT");
 
     const { jobDescription } = req.body;
     if (!jobDescription) {
-      return res.status(400).json({ error: "Job Description is required" });
+      return res.status(400).json({ error: "Job description is required" });
     }
 
     if (!req.file) {
       return res.status(400).json({ error: "Resume PDF is required" });
     }
 
-    console.log("📄 File received:", req.file.originalname);
-    console.log("📄 File size:", req.file.size);
-
-    // ---- PDF PARSING ----
+    // Extract PDF text
     console.log("📄 Parsing PDF...");
-    const parsed = await pdfParse(req.file.buffer); // ✔ FIXED
-    const resumeText = parsed.text;
+    const pdfData = await pdfParse(req.file.buffer);
+    const resumeText = pdfData.text;
+    console.log("📄 Resume length:", resumeText.length);
 
-    console.log("📄 Resume text length:", resumeText.length);
-
-    // ---- PROMPT ----
+    // CREATE PROMPT
     const prompt = `
 Compare the job description and resume. Extract:
 1. Matched skills (exact words)
 2. Missing skills
 3. Match score (0–100)
-4. A short summary (2–3 sentences)
+4. A short summary (2–3 lines)
 
 JOB DESCRIPTION:
 ${jobDescription}
@@ -53,7 +44,7 @@ ${jobDescription}
 RESUME:
 ${resumeText}
 
-Return JSON ONLY:
+Return ONLY valid JSON:
 {
   "matchScore": number,
   "matchedSkills": string[],
@@ -62,23 +53,17 @@ Return JSON ONLY:
 }
 `;
 
-    console.log("🤖 Sending to OpenAI...");
-
-    const aiResponse = await client.responses.create({
-      model: "gpt-4.1-mini",
-      input: prompt,
+    //  CALL OLLAMA
+    const response = await ollama.chat({
+      model: "mistral",
+      messages: [{ role: "user", content: prompt }],
     });
 
-    const rawText =
-      aiResponse.output_text ||
-      aiResponse.output?.[0]?.content?.[0]?.text ||
-      "";
+    const rawText = response.message.content;
+    console.log("🤖 Raw Ollama output:", rawText);
 
-    console.log("🤖 RAW OUTPUT:", rawText);
-
-    // ---- Extract JSON ----
+    // extract JSON
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-
     if (!jsonMatch) {
       return res.status(500).json({
         error: "AI returned invalid JSON.",
@@ -86,14 +71,12 @@ Return JSON ONLY:
       });
     }
 
-    const finalJson = JSON.parse(jsonMatch[0]);
+    const parsed = JSON.parse(jsonMatch[0]);
+    return res.json(parsed);
 
-    console.log("✅ Final Parsed JSON:", finalJson);
-
-    res.json(finalJson);
-  } catch (error) {
-    console.error("❌ AI MATCH ERROR:", error);
-    res.status(500).json({ error: "AI analysis failed. Check backend logs." });
+  } catch (err) {
+    console.error("❌ OLLAMA MATCH ERROR:", err);
+    res.status(500).json({ error: "Ollama failed", details: err.message });
   }
 });
 

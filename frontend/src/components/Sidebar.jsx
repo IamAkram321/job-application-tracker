@@ -5,16 +5,16 @@ import {
   BarChart3,
   HelpCircle,
   BookOpen,
-  Sparkles,   //  NEW ICON
+  Sparkles,
 } from "lucide-react";
 import { useApplications } from "../contexts/ApplicationContext";
 
 const links = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard }, // FIXED
   { to: "/applications", label: "Applications", icon: Briefcase },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
 
-  //  NEW AI FEATURE LINK
+  // NEW AI PAGE
   { to: "/ai-job-match", label: "AI Job Match", icon: Sparkles },
 ];
 
@@ -32,7 +32,7 @@ export default function Sidebar() {
       
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/dashboard" className="flex items-center gap-2"> {/* FIXED */}
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
             <Briefcase className="w-6 h-6 text-white" />
           </div>
@@ -55,7 +55,6 @@ export default function Sidebar() {
             <Icon className="w-5 h-5" />
             <span className="font-medium">{label}</span>
 
-            {/* Application Count Badge */}
             {to === "/applications" && stats.total > 0 && (
               <span className="ml-auto bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded-full">
                 {stats.total}

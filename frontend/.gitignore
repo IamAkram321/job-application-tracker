@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment Files (DO NOT TRACK)
+.env
+*.env
+frontend/.env
+backend/.env
