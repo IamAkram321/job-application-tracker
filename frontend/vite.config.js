@@ -5,6 +5,12 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+
+  // 🚀 Fix: Prevent Vite from pre-bundling PDF worker files
+  optimizeDeps: {
+    exclude: ["pdfjs-dist"]
+  },
+
   server: {
     proxy: {
       '/api': {
