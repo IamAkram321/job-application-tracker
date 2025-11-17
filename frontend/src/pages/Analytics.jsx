@@ -2,7 +2,7 @@ import { useApplications } from "../contexts/ApplicationContext";
 import PieChartStatus from "../components/PieChartStatus";
 import LineChartTrend from "../components/LineChartTrend";
 import BarChartCompanies from "../components/BarChartCompanies";
-import { BarChart3, TrendingUp, DollarSign, Clock } from "lucide-react";
+import { BarChart3, TrendingUp, IndianRupee , Clock } from "lucide-react";
 
 export default function Analytics() {
   const { applications, stats } = useApplications();
@@ -71,7 +71,7 @@ export default function Analytics() {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-md p-6 text-white">
+        <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-xl shadow-md p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <BarChart3 className="w-8 h-8" />
             <TrendingUp className="w-6 h-6 opacity-75" />
@@ -80,18 +80,18 @@ export default function Analytics() {
           <p className="text-blue-100">Total Applications</p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-md p-6 text-white">
+        <div className="bg-linear-to-br from-green-500 to-green-600 rounded-xl shadow-md p-6 text-white">
           <div className="flex items-center justify-between mb-4">
-            <DollarSign className="w-8 h-8" />
+            <IndianRupee className="w-8 h-8" />
             <TrendingUp className="w-6 h-6 opacity-75" />
           </div>
           <h3 className="text-3xl font-bold">
-            ${avgSalary > 0 ? (avgSalary / 1000).toFixed(0) + 'k' : 'N/A'}
+            Rs. {avgSalary > 0 ? (avgSalary / 1000).toFixed(0) + 'k' : 'N/A'}
           </h3>
           <p className="text-green-100">Average Salary</p>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-md p-6 text-white">
+        <div className="bg-linear-to-br from-purple-500 to-purple-600 rounded-xl shadow-md p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <TrendingUp className="w-8 h-8" />
           </div>
@@ -103,7 +103,7 @@ export default function Analytics() {
           <p className="text-purple-100">Response Rate</p>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-md p-6 text-white">
+        <div className="bg-linear-to-br from-orange-500 to-orange-600 rounded-xl shadow-md p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Clock className="w-8 h-8" />
           </div>

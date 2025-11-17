@@ -1,16 +1,17 @@
-# 🎯 JobTrackr - Job Application Tracker
+# 🎯 JobTrackr - AI-Powered Job Application Tracker
 
-> **A beautiful, production-ready job application tracking system built with React 19, Tailwind CSS, and modern web technologies.**
+> **A beautiful, production-ready job application tracking system built with React 19, Tailwind CSS, Express, MongoDB — now enhanced with Local AI Resume Matching using Ollama + Mistral.**
 
 [![React](https://img.shields.io/badge/React-19.1-blue.svg)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-blue.svg)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-7.1-purple.svg)](https://vitejs.dev/)
+[![Node](https://img.shields.io/badge/Node-18+-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ## ✨ Overview
 
-JobTrackr is a comprehensive job application management system that helps job seekers track, analyze, and manage their applications. Built with modern best practices and production-ready features.
-
+JobTrackr is a complete Job Application Tracking System designed to help job seekers **track**, **analyze**, and **manage** their job applications.  
+Now upgraded with **AI-driven Resume–JD Matching**, powered by **Ollama (local LLM)** — giving users offline AI features *with full privacy and zero cost*.
 
 ---
 
@@ -23,24 +24,55 @@ JobTrackr is a comprehensive job application management system that helps job se
 ![Editor](frontend/screenshots/dashboard.png)
 
 ### Application Page
-![Editor](frontend/screenshots/applicationpage.png)
+![Editor](frontend/screenshots/applications.png)
 
 ### Analytics Page
-![Editor](frontend/screenshots/analyticspage.png)
+![Editor](frontend/screenshots/analytics1.png)
 
-### Graph Page
-![Editor](frontend/screenshots/graph.png)
+### Analytics Page
+![Editor](frontend/screenshots/analytics2.png)
+
+### AI Job Match Page
+![Editor](frontend/screenshots/ai-job-match1.png)
+
+### AI Job Match Page
+![Editor](frontend/screenshots/ai-job-match2.png)
 
 ---
 
+## 🤖 NEW — Local AI Resume Matching (Ollama)
+
+### What this AI feature does:
+- Upload a **PDF Resume**
+- AI extracts text from the resume
+- User pastes the **Job Description**
+- Ollama’s **Mistral model** compares both
+- Returns:
+  - ✔ Matched Skills  
+  - ✔ Missing Skills  
+  - ✔ Match Score (0–100%)  
+  - ✔ AI Summary (2–3 lines)
+
+### Why this is awesome:
+- **100% private** — nothing leaves your device  
+- **Free** — no tokens or API charges  
+- **Fast** — runs on your CPU/GPU  
+- **Reliable** — no rate limits or outages  
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js (v18+)
 - MongoDB (local or Atlas)
+- **Ollama installed** — https://ollama.com
+- Pull required LLM model:
 
-
+```bash
+ollama pull mistral
+npm run dev
+```
 
 **Quick Steps:**
 
@@ -49,6 +81,12 @@ JobTrackr is a comprehensive job application management system that helps job se
 cd backend
 npm install
 # Configure .env file
+PORT=5000
+NODE_ENV=development
+MONGO_URI=mongodb://localhost:27017/jobtrackr
+JWT_SECRET=your_secret_key
+JWT_EXPIRE=7d
+FRONTEND_URL=http://localhost:5173
 npm run seed  # Optional: add sample data
 npm run dev
 ```
