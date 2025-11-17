@@ -74,32 +74,6 @@ ollama pull mistral
 npm run dev
 ```
 
-**Quick Steps:**
-
-1. **Backend Setup**:
-```bash
-cd backend
-npm install
-# Configure .env file
-PORT=5000
-NODE_ENV=development
-MONGO_URI=mongodb://localhost:27017/jobtrackr
-JWT_SECRET=your_secret_key
-JWT_EXPIRE=7d
-FRONTEND_URL=http://localhost:5173
-npm run seed  # Optional: add sample data
-npm run dev
-```
-
-2. **Frontend Setup** (in another terminal):
-```bash
-cd frontend
-npm install
-# Create .env file with VITE_API_URL=http://localhost:5000/api
-npm run dev
-```
-
-
 ## 🌟 Key Features
 
 ### 📊 Dashboard
