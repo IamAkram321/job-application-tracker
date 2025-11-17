@@ -1,11 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Briefcase, BarChart3, HelpCircle, BookOpen } from "lucide-react";
+import {
+  LayoutDashboard,
+  Briefcase,
+  BarChart3,
+  HelpCircle,
+  BookOpen,
+  Sparkles,   //  NEW ICON
+} from "lucide-react";
 import { useApplications } from "../contexts/ApplicationContext";
 
 const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/applications", label: "Applications", icon: Briefcase },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
+
+  //  NEW AI FEATURE LINK
+  { to: "/ai-job-match", label: "AI Job Match", icon: Sparkles },
 ];
 
 const additionalLinks = [
@@ -19,7 +29,8 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden lg:flex w-64 bg-white border-r shadow-sm flex-col min-h-screen sticky top-0">
-      {/* Logo/Brand */}
+      
+      {/* Logo */}
       <div className="p-6 border-b border-gray-200">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -43,6 +54,8 @@ export default function Sidebar() {
           >
             <Icon className="w-5 h-5" />
             <span className="font-medium">{label}</span>
+
+            {/* Application Count Badge */}
             {to === "/applications" && stats.total > 0 && (
               <span className="ml-auto bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded-full">
                 {stats.total}
@@ -79,6 +92,7 @@ export default function Sidebar() {
           </div>
         </div>
       </div>
+
     </aside>
   );
 }

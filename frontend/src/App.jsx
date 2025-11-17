@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import KeywordMatch from "./pages/KeywordMatch"; // NEW AI PAGE IMPORT
 
 function AppLayout({ children }) {
   return (
@@ -30,7 +31,8 @@ function App() {
       <AuthProvider>
         <ApplicationProvider>
           <Routes>
-            {/* Public Routes */}
+
+            {/* PUBLIC ROUTES */}
             <Route
               path="/login"
               element={
@@ -39,6 +41,7 @@ function App() {
                 </PublicRoute>
               }
             />
+
             <Route
               path="/register"
               element={
@@ -48,7 +51,7 @@ function App() {
               }
             />
 
-            {/* Protected Routes */}
+            {/* PROTECTED ROUTES */}
             <Route
               path="/dashboard"
               element={
@@ -59,6 +62,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/applications"
               element={
@@ -69,6 +73,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/analytics"
               element={
@@ -80,9 +85,22 @@ function App() {
               }
             />
 
-            {/* Default Routes */}
+            {/*  NEW AI FEATURE ROUTE */}
+            <Route
+              path="/ai-job-match"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <KeywordMatch />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* DEFAULT ROUTES */}
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
+
           </Routes>
         </ApplicationProvider>
       </AuthProvider>
