@@ -2,22 +2,33 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
 import applicationRoutes from './routes/applications.js';
 import authRoutes from './routes/auth.js';
-import aiRoutes from "./routes/ai.js";
+import aiRoutes from './routes/ai.js';
 
-
-// Load environment variables
+// Load environment env variables
 dotenv.config();
 
 const app = express();
 
+// Security + CORS
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,    // allow only your frontend
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.set("trust proxy", 1); // important for render
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging middleware
+// Request log
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
   next();
@@ -26,46 +37,40 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/applications', applicationRoutes);
 app.use('/api/auth', authRoutes);
-app.use("/api/ai", aiRoutes);
+app.use('/api/ai', aiRoutes);
 
-
-// Health check endpoint
+// Health Check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'JobTrackr API is running',
-    timestamp: new Date().toISOString()
+  res.json({
+    status: "OK",
+    message: "JobTrackr API running successfully",
+    time: new Date().toISOString()
   });
 });
 
-// MongoDB connection
+// MongoDB Connect
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/jobtrackr';
-    await mongoose.connect(mongoURI);
-    console.log('✅ MongoDB connected successfully');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ MongoDB Connected");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err.message);
     process.exit(1);
   }
 };
 
-// Connect to database
 connectDB();
 
-// Start server
+// Server
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Graceful shutdown
+// Graceful Shutdown
 process.on('SIGINT', async () => {
-  console.log('\n🛑 Shutting down server...');
+  console.log("\n🛑 Server shutting down...");
   await mongoose.connection.close();
-  console.log('✅ MongoDB connection closed');
+  console.log("🔌 MongoDB connection closed");
   process.exit(0);
 });
-
