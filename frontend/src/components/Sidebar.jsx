@@ -6,21 +6,33 @@ import {
   HelpCircle,
   BookOpen,
   Sparkles,
+  FileText,        // ⬅ added
 } from "lucide-react";
 import { useApplications } from "../contexts/ApplicationContext";
 
 const links = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard }, // FIXED
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/applications", label: "Applications", icon: Briefcase },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
-
-  // NEW AI PAGE
   { to: "/ai-job-match", label: "AI Job Match", icon: Sparkles },
+
+  // ⬇ NEW FEATURE
+  { to: "/resume-builder", label: "AI Resume Builder", icon: FileText },
 ];
 
 const additionalLinks = [
-  { to: "/help", label: "Help & Support", icon: HelpCircle },
-  { to: "/docs", label: "Documentation", icon: BookOpen },
+  { 
+    to: "mailto:akramshahjada786@gmail.com?subject=Help%20Request", 
+    label: "Help & Support", 
+    icon: HelpCircle,
+    external: true 
+  },
+  { 
+    to: "https://github.com/IamAkram321/job-application-tracker", 
+    label: "Documentation", 
+    icon: BookOpen,
+    external: true 
+  },
 ];
 
 export default function Sidebar() {
@@ -29,10 +41,9 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden lg:flex w-64 bg-white border-r shadow-sm flex-col min-h-screen sticky top-0">
-      
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
-        <Link to="/dashboard" className="flex items-center gap-2"> {/* FIXED */}
+        <Link to="/dashboard" className="flex items-center gap-2">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
             <Briefcase className="w-6 h-6 text-white" />
           </div>
@@ -66,15 +77,28 @@ export default function Sidebar() {
 
       {/* Additional Links */}
       <div className="p-4 border-t border-gray-200 space-y-2">
-        {additionalLinks.map(({ to, label, icon: Icon }) => (
-          <Link
-            key={to}
-            to={to}
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all"
-          >
-            <Icon className="w-5 h-5" />
-            <span className="text-sm">{label}</span>
-          </Link>
+        {additionalLinks.map(({ to, label, icon: Icon, external }) => (
+          external ? (
+            <a
+              key={to}
+              href={to}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all"
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-sm">{label}</span>
+            </a>
+          ) : (
+            <Link
+              key={to}
+              to={to}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all"
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-sm">{label}</span>
+            </Link>
+          )
         ))}
       </div>
 
@@ -91,7 +115,6 @@ export default function Sidebar() {
           </div>
         </div>
       </div>
-
     </aside>
   );
 }

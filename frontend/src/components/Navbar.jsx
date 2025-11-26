@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { User, LogOut, Bell, Settings, Menu, X, LayoutDashboard, Briefcase, BarChart3 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { User, LogOut, Bell, Settings, Menu, X, LayoutDashboard, Briefcase, BarChart3, Search } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const mobileLinks = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -12,7 +12,48 @@ const mobileLinks = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      // Navigate to applications page with search query
+      navigate(`/applications?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
+
+  const handleSearchClick = () => {
+    setSearchOpen(true);
+    setTimeout(() => {
+      const input = document.getElementById("navbar-search-input");
+      if (input) input.focus();
+    }, 100);
+  };
+
+  // Keyboard shortcut for search (⌘K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+        setTimeout(() => {
+          const input = document.getElementById("navbar-search-input");
+          if (input) input.focus();
+        }, 100);
+      }
+      if (e.key === "Escape" && searchOpen) {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [searchOpen]);
 
   return (
     <>
@@ -29,18 +70,60 @@ export default function Navbar() {
       
       <div className="flex items-center gap-3">
         {/* Search Bar */}
-        <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer">
-          <span className="text-gray-400 text-sm">Search...</span>
-          <span className="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded">⌘K</span>
-        </div>
+        {searchOpen ? (
+          <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white rounded-lg border-2 border-blue-500 shadow-lg">
+            <Search className="w-4 h-4 text-gray-400" />
+            <input
+              id="navbar-search-input"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
+              onBlur={() => {
+                if (!searchQuery.trim()) {
+                  setTimeout(() => setSearchOpen(false), 200);
+                }
+              }}
+              placeholder="Search applications..."
+              className="outline-none text-sm w-64 bg-transparent"
+              autoFocus
+            />
+            <button
+              onClick={() => {
+                setSearchOpen(false);
+                setSearchQuery("");
+              }}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div 
+            className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+            onClick={handleSearchClick}
+          >
+            <Search className="w-4 h-4 text-gray-400" />
+            <span className="text-gray-400 text-sm">Search...</span>
+            <span className="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded">⌘K</span>
+          </div>
+        )}
 
         {/* Icons */}
-        <button className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+        <button 
+          className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          onClick={() => alert('Notifications - No new notifications')}
+          title="Notifications"
+        >
           <Bell className="w-5 h-5" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
-        <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+        <button 
+          className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          onClick={() => alert('Settings - Settings page coming soon!')}
+          title="Settings"
+        >
           <Settings className="w-5 h-5" />
         </button>
 

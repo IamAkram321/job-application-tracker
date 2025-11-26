@@ -11,7 +11,8 @@ import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-import KeywordMatch from "./pages/KeywordMatch"; // NEW AI PAGE IMPORT
+import KeywordMatch from "./pages/KeywordMatch"; // AI Job Match Page
+import ResumeBuilder from "./pages/ResumeBuilder"; // ⬅ NEW IMPORT
 
 function AppLayout({ children }) {
   return (
@@ -85,13 +86,25 @@ function App() {
               }
             />
 
-            {/*  NEW AI FEATURE ROUTE */}
+            {/* AI JOB MATCH PAGE */}
             <Route
               path="/ai-job-match"
               element={
                 <ProtectedRoute>
                   <AppLayout>
                     <KeywordMatch />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* NEW AI RESUME BUILDER PAGE */}
+            <Route
+              path="/resume-builder"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ResumeBuilder />
                   </AppLayout>
                 </ProtectedRoute>
               }
