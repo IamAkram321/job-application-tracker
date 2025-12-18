@@ -1,9 +1,12 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const PublicRoute = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("token");
+  const { isAuthenticated, loading } = useAuth();
 
-  if (isLoggedIn) {
+  if (loading) return null;
+
+  if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 

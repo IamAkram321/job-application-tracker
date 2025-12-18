@@ -1,109 +1,59 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-// Helper function to get auth token from localStorage
-const getToken = () => localStorage.getItem('token');
+const getToken = () => localStorage.getItem("token");
 
-// Helper function to make API requests
 const apiRequest = async (endpoint, options = {}) => {
   const token = getToken();
-  const url = `${API_BASE_URL}${endpoint}`;
 
-  const config = {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     },
     ...options,
-  };
+  });
 
-  try {
-    const response = await fetch(url, config);
-    const data = await response.json();
+  const isJson = response.headers
+    .get("content-type")
+    ?.includes("application/json");
 
-    if (!response.ok) {
-      throw new Error(data.message || 'An error occurred');
-    }
+  const data = isJson ? await response.json() : null;
 
-    return data;
-  } catch (error) {
-    console.error('API Error:', error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(data?.message || "Request failed");
   }
+
+  return data;
 };
 
-// Authentication API
+//  AUTH API
 export const authAPI = {
-  login: async (email, password) => {
-    return apiRequest('/auth/login', {
-      method: 'POST',
+  login: (email, password) =>
+    apiRequest("/auth/login", {
+      method: "POST",
       body: JSON.stringify({ email, password }),
-    });
-  },
+    }),
 
-  register: async (name, email, password) => {
-    return apiRequest('/auth/register', {
-      method: 'POST',
+  register: (name, email, password) =>
+    apiRequest("/auth/register", {
+      method: "POST",
       body: JSON.stringify({ name, email, password }),
-    });
-  },
+    }),
 
-  getCurrentUser: async () => {
-    return apiRequest('/auth/me');
-  },
+  googleLogin: (credential) =>
+    apiRequest("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ credential }),
+    }),
+
+  getCurrentUser: () => apiRequest("/auth/me"),
 };
 
-// Applications API
+// APPLICATIONS API 
 export const applicationsAPI = {
-  getAll: async () => {
-    const response = await apiRequest('/applications');
-    return response.data || [];
-  },
-
-  getById: async (id) => {
-    const response = await apiRequest(`/applications/${id}`);
-    return response.data;
-  },
-
-  create: async (application) => {
-    const response = await apiRequest('/applications', {
-      method: 'POST',
-      body: JSON.stringify(application),
-    });
-    return response.data;
-  },
-
-  update: async (id, application) => {
-    const response = await apiRequest(`/applications/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(application),
-    });
-    return response.data;
-  },
-
-  delete: async (id) => {
-    return apiRequest(`/applications/${id}`, {
-      method: 'DELETE',
-    });
-  },
-
-  getStats: async () => {
-    const response = await apiRequest('/applications/stats/summary');
-    return response.data || {
-      total: 0,
-      applied: 0,
-      interview: 0,
-      offer: 0,
-      rejected: 0,
-    };
-  },
+  getAll: () => apiRequest("/applications").then((r) => r.data || []),
+  getStats: () =>
+    apiRequest("/applications/stats/summary").then((r) => r.data),
 };
-
-// Health check
-export const healthCheck = async () => {
-  return apiRequest('/health');
-};
-
-
-
-
