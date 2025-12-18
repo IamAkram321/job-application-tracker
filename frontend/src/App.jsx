@@ -11,8 +11,8 @@ import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-import KeywordMatch from "./pages/KeywordMatch"; // AI Job Match Page
-import ResumeBuilder from "./pages/ResumeBuilder"; // ⬅ NEW IMPORT
+import KeywordMatch from "./pages/KeywordMatch";
+import ResumeBuilder from "./pages/ResumeBuilder";
 
 function AppLayout({ children }) {
   return (
@@ -86,7 +86,6 @@ function App() {
               }
             />
 
-            {/* AI JOB MATCH PAGE */}
             <Route
               path="/ai-job-match"
               element={
@@ -98,7 +97,6 @@ function App() {
               }
             />
 
-            {/* NEW AI RESUME BUILDER PAGE */}
             <Route
               path="/resume-builder"
               element={
@@ -110,7 +108,7 @@ function App() {
               }
             />
 
-            {/* DEFAULT ROUTES */}
+            {/* DEFAULT */}
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
 

@@ -10,9 +10,19 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ Check for existing token on mount
+  //  Check for existing token on mount
   useEffect(() => {
     const initAuth = async () => {
+      const isGuest = localStorage.getItem("isGuest") === "true";
+      const storedUser = localStorage.getItem("user");
+
+      if (isGuest && storedUser) {
+        setUser(JSON.parse(storedUser));
+        setIsAuthenticated(true);
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem("token");
       if (token) {
         try {
@@ -31,55 +41,94 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
-  // ✅ Login
+  // Login
+  const setAuthenticatedSession = (sessionUser, token = null, extra = {}) => {
+    setUser(sessionUser);
+    setIsAuthenticated(true);
+    localStorage.setItem("user", JSON.stringify(sessionUser));
+    if (token) {
+      localStorage.setItem("token", token);
+      localStorage.removeItem("isGuest");
+    } else {
+      localStorage.removeItem("token");
+    }
+    Object.entries(extra).forEach(([key, value]) => {
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    });
+  };
+
   const login = async (email, password) => {
     try {
       const response = await authAPI.login(email, password);
       const { user, token } = response.data;
 
-      setUser(user);
-      setIsAuthenticated(true);
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      setAuthenticatedSession(user, token, { isGuest: null });
 
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message || "Invalid credentials" };
     }
   };
 
-  // ✅ Register
+  // Register
   const register = async (name, email, password) => {
     try {
       const response = await authAPI.register(name, email, password);
       const { user, token } = response.data;
 
-      setUser(user);
-      setIsAuthenticated(true);
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      setAuthenticatedSession(user, token, { isGuest: null });
 
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
       return { success: true };
     } catch (error) {
       return { success: false, error: error.message || "Registration failed" };
     }
   };
 
-  // ✅ Logout (Instant redirect + clear)
+  const loginWithGoogle = async () => {
+    try {
+      const googleUser = {
+        name: "Google User",
+        email: "google.user@example.com",
+        avatar: "",
+        provider: "google",
+      };
+
+      setAuthenticatedSession(googleUser, "demo-google-token", { isGuest: null });
+      navigate("/dashboard", { replace: true });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: "Google sign-in failed" };
+    }
+  };
+
+  const continueAsGuest = () => {
+    const guestUser = {
+      name: "Guest Explorer",
+      email: "guest@jobtrackr.com",
+      guest: true,
+    };
+
+    setAuthenticatedSession(guestUser, null, { isGuest: "true" });
+    navigate("/dashboard", { replace: true });
+  };
+
+  // Logout (Instant redirect + clear)
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("isGuest");
     sessionStorage.clear();
 
     // Redirect to login instantly
     navigate("/login", { replace: true });
   };
 
-  // ✅ Sync logout between browser tabs
+  // Sync logout between browser tabs
   useEffect(() => {
     const handleStorageChange = () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -98,6 +147,8 @@ export function AuthProvider({ children }) {
     loading,
     login,
     register,
+    loginWithGoogle,
+    continueAsGuest,
     logout,
   };
 

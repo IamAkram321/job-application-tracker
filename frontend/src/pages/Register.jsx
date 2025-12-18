@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { User, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, AlertCircle, LogIn } from "lucide-react";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -11,7 +11,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   
-  const { register } = useAuth();
+  const { register, loginWithGoogle, continueAsGuest } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -32,6 +32,20 @@ export default function Register() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+    const result = await loginWithGoogle();
+    if (!result.success) {
+      setError(result.error || "Google sign-up failed. Please try again.");
+    }
+    setLoading(false);
+  };
+
+  const handleContinueAsGuest = () => {
+    continueAsGuest();
   };
 
   return (
@@ -135,11 +149,31 @@ export default function Register() {
           </Link>
         </p>
 
-        <p className="text-center mt-4">
-          <Link to="/" className="text-gray-500 text-sm hover:text-gray-700">
+        <div className="mt-6 space-y-3">
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+              className="w-5 h-5"
+              loading="lazy"
+            />
+            Continue with Google
+          </button>
+
+          <button
+            type="button"
+            onClick={handleContinueAsGuest}
+            className="w-full flex items-center justify-center gap-2 text-gray-500 text-sm hover:text-gray-700"
+          >
+            <LogIn className="w-4 h-4" />
             Continue as guest
-          </Link>
-        </p>
+          </button>
+        </div>
       </div>
     </div>
   );

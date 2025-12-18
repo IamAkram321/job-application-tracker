@@ -76,7 +76,8 @@ export function ApplicationProvider({ children }) {
   // ✅ Fetch applications when user logs in
   useEffect(() => {
     const fetchApplications = async () => {
-      if (!isAuthenticated || !user) {
+      const isGuest = localStorage.getItem("isGuest") === "true";
+      if (!isAuthenticated || !user || isGuest) {
         dispatch({ type: actionTypes.RESET_APPLICATIONS });
         return;
       }

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { User, LogOut, Bell, Settings, Menu, X, LayoutDashboard, Briefcase, BarChart3, Search } from "lucide-react";
+import { User, LogOut, Bell, Settings, Menu, X, LayoutDashboard, Briefcase, BarChart3, Search, Sparkles, FileText } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const mobileLinks = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/applications", label: "Applications", icon: Briefcase },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/ai-job-match", label: "AI Job Match", icon: Sparkles },
+  { to: "/resume-builder", label: "AI Resume Builder", icon: FileText },
 ];
 
 export default function Navbar() {
