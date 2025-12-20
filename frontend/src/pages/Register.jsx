@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import toast from "react-hot-toast"; 
 
 const Register = () => {
   const { register, googleLogin } = useAuth();
@@ -12,17 +13,16 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
       await register(name, email, password);
+      toast.success("Account created successfully"); 
     } catch (err) {
-      setError(err.message || "Registration failed");
+      toast.error(err.message || "Registration failed"); 
     } finally {
       setLoading(false);
     }
@@ -31,8 +31,9 @@ const Register = () => {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       await googleLogin(credentialResponse.credential);
+      toast.success("Signed up with Google"); 
     } catch {
-      setError("Google sign-up failed");
+      toast.error("Google sign-up failed"); 
     }
   };
 
@@ -45,12 +46,6 @@ const Register = () => {
         <p className="text-center text-gray-500 mt-2">
           Create your account to start tracking jobs
         </p>
-
-        {error && (
-          <div className="mt-4 text-sm text-red-600 text-center">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           {/* Name */}
@@ -115,7 +110,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Register */}
           <button
             type="submit"
             disabled={loading}
@@ -125,7 +119,6 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Login link */}
         <p className="text-center text-sm text-gray-600 mt-4">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-600 font-medium">
@@ -133,11 +126,10 @@ const Register = () => {
           </Link>
         </p>
 
-        {/* Google Sign Up */}
         <div className="mt-6 flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setError("Google sign-up failed")}
+            onError={() => toast.error("Google sign-up failed")}
           />
         </div>
       </div>

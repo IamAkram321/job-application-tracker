@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ApplicationProvider } from "./contexts/ApplicationContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { Toaster } from "react-hot-toast"; // ✅ ADD
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -31,8 +32,21 @@ function App() {
     <Router>
       <AuthProvider>
         <ApplicationProvider>
-          <Routes>
 
+          {/* global toast goes here */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                borderRadius: "10px",
+                background: "#333",
+                color: "#fff",
+              },
+            }}
+          />
+
+          <Routes>
             {/* PUBLIC ROUTES */}
             <Route
               path="/login"
@@ -108,11 +122,10 @@ function App() {
               }
             />
 
-            {/* DEFAULT */}
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
-
           </Routes>
+
         </ApplicationProvider>
       </AuthProvider>
     </Router>

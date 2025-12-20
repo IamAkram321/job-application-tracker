@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import toast from "react-hot-toast"; 
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,37 +13,35 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  //  Clearing fields every time login page mounts
+  // Clear fields on mount
   useEffect(() => {
     setEmail("");
     setPassword("");
   }, []);
 
-  // Email / password login
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
       await login(email, password);
+      toast.success("Logged in successfully"); 
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      setError(err.message || "Login failed");
+      toast.error(err.message || "Login failed"); 
     } finally {
       setLoading(false);
     }
   };
 
-  // Google OAuth login
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       await googleLogin(credentialResponse.credential);
+      toast.success("Logged in with Google"); 
       navigate("/dashboard", { replace: true });
     } catch {
-      setError("Google login failed");
+      toast.error("Google login failed"); 
     }
   };
 
@@ -56,17 +55,7 @@ const Login = () => {
           Sign in to continue your job search journey
         </p>
 
-        {error && (
-          <div className="mt-4 text-sm text-red-600 text-center">
-            {error}
-          </div>
-        )}
-
-        <form
-          onSubmit={handleLogin}
-          className="mt-6 space-y-4"
-          autoComplete="off" 
-        >
+        <form onSubmit={handleLogin} className="mt-6 space-y-4" autoComplete="off">
           {/* Email */}
           <div>
             <label className="text-sm font-medium text-gray-700">Email</label>
@@ -74,7 +63,7 @@ const Login = () => {
               <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type="email"
-                autoComplete="off" 
+                autoComplete="off"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -91,7 +80,7 @@ const Login = () => {
               <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type={showPassword ? "text" : "password"}
-                autoComplete="new-password" 
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -108,7 +97,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Sign In */}
           <button
             type="submit"
             disabled={loading}
@@ -118,7 +106,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Register */}
         <p className="text-center text-sm text-gray-600 mt-4">
           Don&apos;t have an account?{" "}
           <Link to="/register" className="text-blue-600 font-medium">
@@ -126,11 +113,10 @@ const Login = () => {
           </Link>
         </p>
 
-        {/* Google Login */}
         <div className="mt-6 flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setError("Google login failed")}
+            onError={() => toast.error("Google login failed")}
           />
         </div>
       </div>
