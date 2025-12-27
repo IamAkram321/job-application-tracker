@@ -15,11 +15,7 @@ const apiRequest = async (endpoint, options = {}) => {
     ...options,
   });
 
-  const isJson = response.headers
-    .get("content-type")
-    ?.includes("application/json");
-
-  const data = isJson ? await response.json() : null;
+  const data = await response.json();
 
   if (!response.ok) {
     throw new Error(data?.message || "Request failed");
@@ -28,7 +24,7 @@ const apiRequest = async (endpoint, options = {}) => {
   return data;
 };
 
-//  AUTH API
+// ================= AUTH API =================
 export const authAPI = {
   login: (email, password) =>
     apiRequest("/auth/login", {
@@ -51,9 +47,37 @@ export const authAPI = {
   getCurrentUser: () => apiRequest("/auth/me"),
 };
 
-// APPLICATIONS API 
+// ================= APPLICATIONS API =================
 export const applicationsAPI = {
-  getAll: () => apiRequest("/applications").then((r) => r.data || []),
-  getStats: () =>
-    apiRequest("/applications/stats/summary").then((r) => r.data),
+  getAll: async () => {
+    const res = await apiRequest("/applications");
+    return res.data;
+  },
+
+  create: async (application) => {
+    const res = await apiRequest("/applications", {
+      method: "POST",
+      body: JSON.stringify(application),
+    });
+    return res.data;
+  },
+
+  update: async (id, updates) => {
+    const res = await apiRequest(`/applications/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    });
+    return res.data;
+  },
+
+  delete: async (id) => {
+    await apiRequest(`/applications/${id}`, {
+      method: "DELETE",
+    });
+  },
+
+  getStats: async () => {
+    const res = await apiRequest("/applications/stats/summary");
+    return res.data;
+  },
 };

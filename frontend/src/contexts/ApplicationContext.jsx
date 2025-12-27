@@ -17,7 +17,6 @@ const initialState = {
   },
 };
 
-// Action types
 const actionTypes = {
   FETCH_APPLICATIONS: "FETCH_APPLICATIONS",
   ADD_APPLICATION: "ADD_APPLICATION",
@@ -29,7 +28,6 @@ const actionTypes = {
   SET_STATS: "SET_STATS",
 };
 
-// Reducer
 function applicationReducer(state, action) {
   switch (action.type) {
     case actionTypes.FETCH_APPLICATIONS:
@@ -49,7 +47,9 @@ function applicationReducer(state, action) {
     case actionTypes.DELETE_APPLICATION:
       return {
         ...state,
-        applications: state.applications.filter((app) => app._id !== action.payload),
+        applications: state.applications.filter(
+          (app) => app._id !== action.payload
+        ),
       };
 
     case actionTypes.RESET_APPLICATIONS:
@@ -73,7 +73,6 @@ export function ApplicationProvider({ children }) {
   const [state, dispatch] = useReducer(applicationReducer, initialState);
   const { user, isAuthenticated } = useAuth();
 
-  // ✅ Fetch applications when user logs in
   useEffect(() => {
     const fetchApplications = async () => {
       const isGuest = localStorage.getItem("isGuest") === "true";
@@ -86,30 +85,32 @@ export function ApplicationProvider({ children }) {
 
       try {
         const applications = await applicationsAPI.getAll();
-        dispatch({ type: actionTypes.FETCH_APPLICATIONS, payload: applications });
+        dispatch({
+          type: actionTypes.FETCH_APPLICATIONS,
+          payload: applications,
+        });
       } catch (error) {
-        console.error("Error fetching applications:", error);
-        dispatch({ type: actionTypes.SET_ERROR, payload: error.message });
+        dispatch({
+          type: actionTypes.SET_ERROR,
+          payload: error.message,
+        });
       }
     };
 
     fetchApplications();
   }, [isAuthenticated, user]);
 
-  // ✅ Recalculate stats when applications change
   useEffect(() => {
-    const { applications } = state;
     const stats = {
-      total: applications.length,
-      applied: applications.filter((a) => a.status === "Applied").length,
-      interview: applications.filter((a) => a.status === "Interview").length,
-      offer: applications.filter((a) => a.status === "Offer").length,
-      rejected: applications.filter((a) => a.status === "Rejected").length,
+      total: state.applications.length,
+      applied: state.applications.filter((a) => a.status === "Applied").length,
+      interview: state.applications.filter((a) => a.status === "Interview").length,
+      offer: state.applications.filter((a) => a.status === "Offer").length,
+      rejected: state.applications.filter((a) => a.status === "Rejected").length,
     };
     dispatch({ type: actionTypes.SET_STATS, payload: stats });
   }, [state.applications]);
 
-  // ✅ Actions
   const addApplication = async (app) => {
     const newApp = await applicationsAPI.create(app);
     dispatch({ type: actionTypes.ADD_APPLICATION, payload: newApp });
@@ -117,7 +118,10 @@ export function ApplicationProvider({ children }) {
 
   const updateApplication = async (id, updates) => {
     const updatedApp = await applicationsAPI.update(id, updates);
-    dispatch({ type: actionTypes.UPDATE_APPLICATION, payload: updatedApp });
+    dispatch({
+      type: actionTypes.UPDATE_APPLICATION,
+      payload: updatedApp,
+    });
   };
 
   const deleteApplication = async (id) => {
@@ -125,15 +129,15 @@ export function ApplicationProvider({ children }) {
     dispatch({ type: actionTypes.DELETE_APPLICATION, payload: id });
   };
 
-  const value = {
-    ...state,
-    addApplication,
-    updateApplication,
-    deleteApplication,
-  };
-
   return (
-    <ApplicationContext.Provider value={value}>
+    <ApplicationContext.Provider
+      value={{
+        ...state,
+        addApplication,
+        updateApplication,
+        deleteApplication,
+      }}
+    >
       {children}
     </ApplicationContext.Provider>
   );
